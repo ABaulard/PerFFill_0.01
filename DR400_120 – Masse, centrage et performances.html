@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DR400/120 – Masse, centrage et performances</title>
+<style>
+:root{--bg:#eef2f5;--card:#fff;--ink:#14213d;--mut:#5c6b7f;--line:#d3dce5;--acc:#0b7285;--env:rgba(11,114,133,.14);--ok:#2b8a3e;--ko:#c92a2a;--inp:#f6f8fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1621;--card:#16212f;--ink:#e6edf5;--mut:#90a0b4;--line:#2a3a4d;--acc:#4cc3d9;--env:rgba(76,195,217,.16);--ok:#69db7c;--ko:#ff8787;--inp:#0f1925}}
+:root[data-theme="dark"]{--bg:#0e1621;--card:#16212f;--ink:#e6edf5;--mut:#90a0b4;--line:#2a3a4d;--acc:#4cc3d9;--env:rgba(76,195,217,.16);--ok:#69db7c;--ko:#ff8787;--inp:#0f1925}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+main{max-width:820px;margin:0 auto;padding:20px 14px 48px}
+h1{font-size:24px;margin:4px 0 2px;font-weight:600}
+h2{font-size:17px;margin:0 0 4px;font-weight:600}
+p.s{margin:0 0 12px;color:var(--mut);font-size:13.5px}
+section{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:14px 0}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th{font-size:12.5px;font-weight:500;color:var(--mut);text-align:left;padding:4px 6px}
+td{padding:5px 6px;vertical-align:middle}
+td.c{text-align:right}td.f{color:var(--mut)}
+input[type=number]{width:110px;font:inherit;color:var(--ink);background:var(--inp);border:1px solid var(--line);border-radius:5px;padding:6px 8px;text-align:right}
+input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+button{font:inherit;cursor:pointer;border-radius:5px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px}
+button.p{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+button:disabled{opacity:.5;cursor:default}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.res td,.res th{padding:7px 8px;border-bottom:1px solid var(--line)}
+.ok{color:var(--ok);font-weight:600}.ko{color:var(--ko);font-weight:600}
+.verdict{padding:10px 12px;border-radius:6px;border:1px solid currentColor;margin-bottom:12px;font-weight:600}
+svg{width:100%;height:auto;display:block}
+.ax{stroke:var(--line)}.tx{fill:var(--mut);font-size:11px}
+.tot{font-size:13.5px;color:var(--mut)}.tot b{color:var(--ink)}
+#warn{margin:10px 0 0;padding:8px 12px 8px 28px;border:1px solid var(--ko);border-radius:6px;font-size:13.5px}
+#warn:empty{display:none}
+details{margin-top:10px;font-size:13.5px;color:var(--mut)}summary{cursor:pointer}
+@media print{body{background:#fff}.bar,.noprint{display:none!important}section{break-inside:avoid}}
+select{font:inherit;color:var(--ink);background:var(--inp);border:1px solid var(--line);border-radius:5px;padding:6px 8px;display:block;margin-top:2px;min-width:230px}
+[hidden]{display:none!important}
+#tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 14px}
+#tabs button{padding:10px 4px;font-weight:600;font-size:14px}#tabs button.on{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+#tabs small{display:block;font-weight:400;font-size:11px;opacity:.8}
+#perf{--ac:var(--acc);--ac2:var(--env);--er:var(--ko);--wa:#c77d00}
+#perf .ps{display:none;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}#perf .ps.on{display:block}
+#perf .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#perf label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
+#perf input[type=number]{width:100%;text-align:left;font-size:16px;padding:9px}
+#perf label.ck{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px;grid-column:span 2}#perf label.ck input{width:auto}
+#perf .mbb{font-size:12px;padding:4px 8px;margin-top:2px}
+#perf .pr{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+#perf .big{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+#perf .big div{background:var(--ac2);border-radius:10px;padding:10px}#perf .big b{display:block;font-size:22px;color:var(--ac)}#perf .big span{font-size:12px;color:var(--mut)}
+#perf table{min-width:0;font-size:13px}#perf td{padding:4px 0;border-bottom:1px solid var(--line)}#perf td:last-child{text-align:right;font-weight:600}
+#perf .w{color:var(--wa);font-size:13px;margin:4px 0}#perf .e{color:var(--er);font-weight:600}#perf .o{color:var(--ok);font-weight:600}
+#perf .n{font-size:12px;color:var(--mut);margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<nav id="tabs" class="noprint"><button data-s="mb" class="on">Masse et centrage</button><button data-s="to">Décollage<small>p. 5-4</small></button><button data-s="ld">Atterrissage<small>p. 5-10</small></button><button data-s="cl">Montée / pente<small>p. 5-6</small></button></nav>
+<div id="mb">
+<noscript><p class="s" style="color:var(--ko)">JavaScript est désactivé ou bloqué : vous voyez le devis de la fiche F-GXGH avec le chargement de la fiche (non modifiable ici). Ouvrez ce fichier dans un navigateur (Chrome, Safari, Firefox) pour modifier le chargement.</p></noscript>
+<div class="top"><div><h1>Masse et centrage</h1><label class="noprint" style="display:block;margin:6px 0 4px;font-size:12.5px;color:var(--mut)">Avion<select id="plane"><option value="0">F-GXGH – DR400/120</option><option value="1">F-HUPI – DR400/120</option></select></label><p class="s" id="sub">DR400/120, F-GXGH, pesée du 24/04/2017. Seul le chargement est modifiable.</p></div>
+<div class="bar noprint"><button id="print">Imprimer / PDF</button><button id="reset">Réinitialiser le chargement</button></div></div>
+
+<section>
+<h2>Chargement</h2>
+<p class="s">Saisissez les masses embarquées. Les bras de levier de chaque poste sont fixes.</p>
+<div class="tw"><table><thead><tr><th>Poste</th><th id="hb">Bras (m)</th><th>Quantité</th><th></th><th style="text-align:right" id="hm">Masse (kg)</th></tr></thead><tbody id="ts"><tr><td>Passagers avant (pilote + passager)</td><td class="f">0.41</td><td><input id="q0" type="number" min="0" step="any" inputmode="decimal" value="154"></td><td class="f">kg</td><td class="c" id="w0">154.00</td></tr><tr><td>Passagers arrière</td><td class="f">1.19</td><td><input id="q1" type="number" min="0" step="any" inputmode="decimal" value="50"></td><td class="f">kg</td><td class="c" id="w1">50.00</td></tr><tr><td>Bagages arrière</td><td class="f">1.90</td><td><input id="q2" type="number" min="0" step="any" inputmode="decimal" value="5"></td><td class="f">kg</td><td class="c" id="w2">5.00</td></tr><tr><td>Carburant</td><td class="f">1.12</td><td><input id="q3" type="number" min="0" step="any" inputmode="decimal" value="111.11"></td><td class="f">L</td><td class="c" id="w3">80.00</td></tr><tr><td>Carburant consommé en vol</td><td class="f">–</td><td><input id="burn" type="number" min="0" step="any" inputmode="decimal" value="30"></td><td class="f">L</td><td class="c" id="wb">− 21.60</td></tr></tbody></table></div>
+<div class="tot" style="margin-top:10px" id="ewt">Masse à vide : <b>565.50 kg</b> — centrage à vide : <b>0.3096 m</b> — charge utile : <b>334.50 kg</b> (masse maximale 900 kg)</div>
+<details><summary>Données de la fiche utilisées</summary><div id="cfg" style="margin-top:6px"><p>Origine des bras : BDA nervure 7 (bord d'attaque). Densité du carburant : 0.72 kg/L.</p><p>Pesée : Roue avant 178, bras -0.819 ; Roue principale gauche 194.5, bras 0.828 ; Roue principale droite 193, bras 0.828.</p><p>Enveloppe (bras ; masse) : (0.205 ; 560), (0.205 ; 750), (0.43 ; 900), (0.56 ; 900), (0.56 ; 560).</p></div></details>
+</section>
+
+<section>
+<h2>Devis de masse et centrage</h2>
+<div id="verdict"><div class="verdict ok">Chargement conforme : masse et centrage dans les limites.</div></div>
+<div class="tw"><table class="res"><thead id="hr"><tr><th></th><th>Situation</th><th>Masse (kg)</th><th>Moment (kg·m)</th><th>Centrage (m)</th><th>Contrôle</th></tr></thead><tbody id="tr"><tr><td><b>1</b></td><td>Masse à vide</td><td>565.50</td><td>175.07</td><td>0.3096</td><td>–</td></tr><tr><td><b>2</b></td><td>Sans carburant</td><td>774.50</td><td>307.21</td><td>0.3967</td><td><span class="ok">Conforme</span></td></tr><tr><td><b>3</b></td><td>Décollage</td><td>854.50</td><td>396.81</td><td>0.4644</td><td><span class="ok">Conforme</span></td></tr><tr><td><b>4</b></td><td>Atterrissage</td><td>832.90</td><td>372.62</td><td>0.4474</td><td><span class="ok">Conforme</span></td></tr></tbody></table></div>
+</section>
+
+<section>
+<h2>Graphique du centrage</h2>
+<div id="chart"><svg viewBox="0 0 640 420" role="img" aria-label="Graphique masse et centrage"><line class="ax" x1="100.38028169014089" x2="100.38028169014089" y1="14" y2="370"></line><text class="tx" x="100.38028169014089" y="386" text-anchor="middle">0.2</text><line class="ax" x1="232.77464788732394" x2="232.77464788732394" y1="14" y2="370"></line><text class="tx" x="232.77464788732394" y="386" text-anchor="middle">0.3</text><line class="ax" x1="365.169014084507" x2="365.169014084507" y1="14" y2="370"></line><text class="tx" x="365.169014084507" y="386" text-anchor="middle">0.4</text><line class="ax" x1="497.5633802816901" x2="497.5633802816901" y1="14" y2="370"></line><text class="tx" x="497.5633802816901" y="386" text-anchor="middle">0.5</text><line class="ax" x1="60" x2="624" y1="305.4313725490196" y2="305.4313725490196"></line><text class="tx" x="52" y="309.4313725490196" text-anchor="end">600</text><line class="ax" x1="60" x2="624" y1="218.1764705882353" y2="218.1764705882353"></line><text class="tx" x="52" y="222.1764705882353" text-anchor="end">700</text><line class="ax" x1="60" x2="624" y1="130.921568627451" y2="130.921568627451"></line><text class="tx" x="52" y="134.921568627451" text-anchor="end">800</text><line class="ax" x1="60" x2="624" y1="43.666666666666686" y2="43.666666666666686"></line><text class="tx" x="52" y="47.666666666666686" text-anchor="end">900</text><polygon points="107,340.3333333333333 107,174.54901960784312 404.88732394366195,43.666666666666686 577,43.666666666666686 577,340.3333333333333" fill="var(--env)" stroke="var(--acc)" stroke-width="2" stroke-linejoin="round"></polygon><polyline points="360.73820456632626,153.171568627451 450.39639682073096,83.36834509803924 427.88579726212475,102.21540392156868" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"></polyline><circle cx="245.45922217656073" cy="335.53431372549016" r="10" fill="var(--mut)" stroke="var(--card)" stroke-width="2"></circle><text x="245.45922217656073" y="339.53431372549016" text-anchor="middle" font-size="11" font-weight="600" fill="var(--card)">1</text><circle cx="360.73820456632626" cy="153.171568627451" r="10" fill="var(--acc)" stroke="var(--card)" stroke-width="2"></circle><text x="360.73820456632626" y="157.171568627451" text-anchor="middle" font-size="11" font-weight="600" fill="var(--card)">2</text><circle cx="450.39639682073096" cy="83.36834509803924" r="10" fill="var(--acc)" stroke="var(--card)" stroke-width="2"></circle><text x="450.39639682073096" y="87.36834509803924" text-anchor="middle" font-size="11" font-weight="600" fill="var(--card)">3</text><circle cx="427.88579726212475" cy="102.21540392156868" r="10" fill="var(--acc)" stroke="var(--card)" stroke-width="2"></circle><text x="427.88579726212475" y="106.21540392156868" text-anchor="middle" font-size="11" font-weight="600" fill="var(--card)">4</text><text class="tx" x="342" y="412" text-anchor="middle" font-size="12">Centrage (m depuis l'origine)</text><text class="tx" transform="translate(14 192) rotate(-90)" text-anchor="middle" font-size="12">Masse (kg)</text></svg><p class="s" style="margin-top:6px">Zone teintée : enveloppe autorisée. Les points sont numérotés comme dans le devis ; la ligne en pointillés relie sans carburant, décollage et atterrissage.</p></div>
+</section>
+<ul id="warn"><li>Enveloppe relevée sur le graphique de la fiche : à vérifier avec le manuel de vol.</li><li>Masse maximale de 900 kg reprise de la fiche du F-HUPI (même type) ; la fiche du F-GXGH ne l'indique pas.</li></ul>
+<p class="s" style="margin-top:12px">L'enveloppe et les masses maximales sont lues sur le graphique de la fiche : vérifiez-les avec le manuel de vol. Ce devis ne le remplace pas.</p>
+</div>
+<div id="perf" hidden>
+<div class="ps" id="to"></div><div class="ps" id="ld"></div>
+<div class="ps" id="cl"><h2>Montée / pente</h2><div class="g">
+<label>Masse (kg)<input type="number" id="clm" value="900"></label>
+<label>Altitude pression de départ (ft)<input type="number" id="clz" value="0"></label>
+<label>Altitude pression cible (ft), optionnelle<input type="number" id="clh" value="5000"></label>
+<label>Température OAT au départ (°C)<input type="number" id="clt" placeholder="ISA"></label>
+<label>Vent debout (kt, − = arrière)<input type="number" id="clw" value="0"></label></div>
+<div class="pr" id="clo"></div>
+<p class="n">Graphique p. 5-7 : volets rentrés, plein gaz, Vy 145 km/h (78 kt) niveau mer, correction −3,5 % par 10 °C au-dessus de l’ISA (+3,5 % en dessous). Droites 800/900 kg relevées sur le graphique (±0,05 m/s). Vx = 130 km/h (70 kt), Vy volets décollage = 140 km/h (75 kt) ; le manuel ne donne pas de taux à Vx.</p></div>
+<p class="s" style="margin-top:12px">Performances : Section 5 du manuel de vol DR400/120 (1002853 Ed.0 Rév.1). Aide au calcul, elle ne remplace pas le manuel.</p>
+</div>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const U={metric:{m:'kg',a:'m',v:'L',M:'kg·m',d:0.72},imperial:{m:'lb',a:'in',v:'gal US',M:'lb·in',d:6}};
+const FLEET=[
+{type:'DR400/120',reg:'F-GXGH',date:'24/04/2017',datum:"BDA nervure 7 (bord d'attaque)",units:'metric',density:0.72,mtow:900,mlw:900,burn:30,
+weigh:[{n:'Roue avant',r:178,t:0,a:-0.819},{n:'Roue principale gauche',r:194.5,t:0,a:0.828},{n:'Roue principale droite',r:193,t:0,a:0.828}],
+st:[{n:'Passagers avant (pilote + passager)',a:0.41,k:'m',q:154},{n:'Passagers arrière',a:1.19,k:'m',q:50},{n:'Bagages arrière',a:1.9,k:'m',q:5},{n:'Carburant',a:1.12,k:'f',q:+(80/0.72).toFixed(2)}],
+env:[[0.205,560],[0.205,750],[0.43,900],[0.56,900],[0.56,560]],
+warnings:['Enveloppe relevée sur le graphique de la fiche : à vérifier avec le manuel de vol.','Masse maximale de 900 kg reprise de la fiche du F-HUPI (même type) ; la fiche du F-GXGH ne l\'indique pas.']},
+{type:'DR400/120',reg:'F-HUPI',date:'13/10/2025',datum:"Bord d'attaque de la partie rectangulaire de l'aile",units:'metric',density:0.72,mtow:900,mlw:900,burn:30,
+weigh:[{n:'Roue avant',r:164.5,t:0,a:-0.827},{n:'Roue principale gauche',r:210,t:0,a:0.82},{n:'Roue principale droite',r:214,t:0,a:0.82}],
+st:[{n:'Équipage (pilote + passager avant)',a:0.41,k:'m',q:154},{n:'Passagers arrière',a:1.19,k:'m',q:80},{n:'Bagages',a:1.9,k:'m',q:12},{n:'Essence principale',a:1.12,k:'f',q:+(50/0.72).toFixed(2)},{n:'Essence supplémentaire',a:1.61,k:'f',q:+(10/0.72).toFixed(2)}],
+env:[[0.205,560],[0.205,750],[0.43,900],[0.56,900],[0.56,560]],
+warnings:['Enveloppe relevée sur le graphique de la fiche : à vérifier avec le manuel de vol.','Masse maximale à l\'atterrissage non indiquée sur la fiche : égale à celle du décollage (900 kg).','Masses d\'essence de la fiche converties en litres avec une densité de 0,72.']}
+];
+let AC,Q,burn;
+const f2=x=>(isFinite(x)?x:0).toFixed(2),f3=x=>(isFinite(x)?x:0).toFixed(4);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const inp=(id,v)=>`<input id="${id}" type="number" min="0" step="any" inputmode="decimal" value="${v}">`;
+function empty(){let w=0,m=0;AC.weigh.forEach(p=>{const n=p.r-p.t;w+=n;m+=n*p.a});return{w,m,cg:w?m/w:0}}
+
+function setAC(a){
+ AC=a;Q=a.st.map(s=>s.q);burn=a.burn||0;const u=U[a.units],e=empty();
+ $('#sub').textContent=[a.type,a.reg,a.date&&('pesée du '+a.date)].filter(Boolean).join(', ')+'. Seul le chargement est modifiable.';
+ $('#hb').textContent=`Bras (${u.a})`;$('#hm').textContent=`Masse (${u.m})`;
+ $('#ts').innerHTML=a.st.map((s,i)=>`<tr><td>${esc(s.n)}</td><td class="f">${s.a.toFixed(2)}</td><td>${inp('q'+i,Q[i])}</td><td class="f">${s.k==='f'?u.v:u.m}</td><td class="c" id="w${i}"></td></tr>`).join('')+
+ `<tr><td>Carburant consommé en vol</td><td class="f">–</td><td>${inp('burn',burn)}</td><td class="f">${u.v}</td><td class="c" id="wb"></td></tr>`;
+ $('#ewt').innerHTML=`Masse à vide : <b>${f2(e.w)} ${u.m}</b> — centrage à vide : <b>${f3(e.cg)} ${u.a}</b> — charge utile : <b>${f2(a.mtow-e.w)} ${u.m}</b> (masse maximale ${a.mtow} ${u.m})`;
+ $('#cfg').innerHTML=`<p>Origine des bras : ${esc(a.datum||'non précisée')}. Densité du carburant : ${a.density} ${u.m}/${u.v}.</p><p>Pesée : ${a.weigh.map(p=>`${esc(p.n)} ${p.r}${p.t?' (tare '+p.t+')':''}, bras ${p.a}`).join(' ; ')}.</p><p>Enveloppe (bras ; masse) : ${a.env.map(p=>`(${p[0]} ; ${p[1]})`).join(', ')}.</p>`;
+ $('#warn').innerHTML=(a.warnings||[]).map(w=>`<li>${esc(w)}</li>`).join('');
+ calc();
+}
+function inEnv(x,y){const E=AC.env;let c=false;
+ for(let i=0,j=E.length-1;i<E.length;j=i++){const a=E[i],b=E[j];
+  if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}
+ return c}
+function ticks(a,b,n){const raw=(b-a)/n||1,mag=Math.pow(10,Math.floor(Math.log10(raw)));
+ const st=[1,2,5,10].map(k=>k*mag).find(s=>s>=raw);const o=[];
+ for(let v=Math.ceil(a/st)*st;v<=b+1e-9;v+=st)o.push(parseFloat(v.toFixed(6)));return o}
+
+function calc(){
+ const u=U[AC.units],d=AC.density,e=empty();let nw=0,nm=0,fw=0,fm=0;
+ AC.st.forEach((s,i)=>{const w=s.k==='f'?Q[i]*d:Q[i];$('#w'+i).textContent=f2(w);
+  if(s.k==='f'){fw+=w;fm+=w*s.a}else{nw+=w;nm+=w*s.a}});
+ const bw=Math.min(burn*d,fw),ba=fw?fm/fw:0;$('#wb').textContent='− '+f2(bw);
+ const P=[{n:'Masse à vide',w:e.w,m:e.m},{n:'Sans carburant',w:e.w+nw,m:e.m+nm},{n:'Décollage',w:e.w+nw+fw,m:e.m+nm+fm,lim:AC.mtow},{n:'Atterrissage',w:e.w+nw+fw-bw,m:e.m+nm+fm-bw*ba,lim:AC.mlw}];
+ P.forEach((p,i)=>{p.cg=p.w?p.m/p.w:0;if(i>0){p.env=inEnv(p.cg,p.w);p.over=!!p.lim&&p.w>p.lim}});
+ let ok=true;
+ $('#hr').innerHTML=`<tr><th></th><th>Situation</th><th>Masse (${u.m})</th><th>Moment (${u.M})</th><th>Centrage (${u.a})</th><th>Contrôle</th></tr>`;
+ $('#tr').innerHTML=P.map((p,i)=>{let s='–';
+  if(i>0){const bad=[];if(!p.env)bad.push('hors enveloppe');if(p.over)bad.push('masse maximale dépassée');
+   if(bad.length){ok=false;s=`<span class="ko">${bad.join(', ')}</span>`}else s='<span class="ok">Conforme</span>'}
+  return `<tr><td><b>${i+1}</b></td><td>${p.n}</td><td>${f2(p.w)}</td><td>${f2(p.m)}</td><td>${f3(p.cg)}</td><td>${s}</td></tr>`}).join('');
+ $('#verdict').innerHTML=ok?'<div class="verdict ok">Chargement conforme : masse et centrage dans les limites.</div>':'<div class="verdict ko">Chargement non conforme : voir le détail ci-dessous.</div>';
+ draw(P,u);window.MBM=AC.units==='metric'?{to:P[2].w,ld:P[3].w}:null;document.dispatchEvent(new Event('mbupdate'));
+}
+function draw(P,u){
+ const E=AC.env,xs=E.map(p=>p[0]).concat(P.map(p=>p.cg)),ys=E.map(p=>p[1]).concat(P.map(p=>p.w));
+ let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+ const px=(x1-x0||1)*.1,py=(y1-y0||1)*.1;x0-=px;x1+=px;y0-=py;y1+=py;
+ const W=640,H=420,L=60,R=16,T=14,B=50;
+ const X=v=>L+(v-x0)/(x1-x0)*(W-L-R),Y=v=>H-B-(v-y0)/(y1-y0)*(H-T-B);let g='';
+ ticks(x0,x1,7).forEach(v=>{g+=`<line class="ax" x1="${X(v)}" x2="${X(v)}" y1="${T}" y2="${H-B}"/><text class="tx" x="${X(v)}" y="${H-B+16}" text-anchor="middle">${v}</text>`});
+ ticks(y0,y1,6).forEach(v=>{g+=`<line class="ax" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="tx" x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`});
+ g+=`<polygon points="${E.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="var(--env)" stroke="var(--acc)" stroke-width="2" stroke-linejoin="round"/>`;
+ g+=`<polyline points="${P.slice(1).map(p=>X(p.cg)+','+Y(p.w)).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+ P.forEach((p,i)=>{const bad=i>0&&(!p.env||p.over),col=bad?'var(--ko)':(i===0?'var(--mut)':'var(--acc)');
+  g+=`<circle cx="${X(p.cg)}" cy="${Y(p.w)}" r="10" fill="${col}" stroke="var(--card)" stroke-width="2"/><text x="${X(p.cg)}" y="${Y(p.w)+4}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--card)">${i+1}</text>`});
+ g+=`<text class="tx" x="${(L+W-R)/2}" y="${H-8}" text-anchor="middle" font-size="12">Centrage (${u.a} depuis l'origine)</text><text class="tx" transform="translate(14 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle" font-size="12">Masse (${u.m})</text>`;
+ $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique masse et centrage">${g}</svg><p class="s" style="margin-top:6px">Zone teintée : enveloppe autorisée. Les points sont numérotés comme dans le devis ; la ligne en pointillés relie sans carburant, décollage et atterrissage.</p>`;
+}
+
+document.addEventListener('input',e=>{
+ const t=e.target;if(t.type!=='number'||!/^(q\d+|burn)$/.test(t.id))return;
+ const v=t.value===''?0:Math.max(0,+t.value);
+ if(t.id==='burn')burn=v;else Q[+t.id.slice(1)]=v;calc()});
+$('#print').onclick=()=>window.print();
+$('#reset').onclick=()=>{Q=AC.st.map(s=>s.q);burn=AC.burn||0;AC.st.forEach((s,i)=>$('#q'+i).value=Q[i]);$('#burn').value=burn;calc()};
+const sel=$('#plane');
+sel.innerHTML=FLEET.map((a,i)=>`<option value="${i}">${a.reg} – ${a.type}</option>`).join('');
+const pick=i=>setAC(JSON.parse(JSON.stringify(FLEET[i])));
+sel.onchange=()=>pick(+sel.value);
+pick(0);
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));const s=b.dataset.s;$('#mb').hidden=s!=='mb';$('#perf').hidden=s==='mb';['to','ld','cl'].forEach(i=>document.getElementById(i).classList.toggle('on',i===s))});
+/* Performances DR400/120 */
+(function(){
+const $=i=>document.getElementById(i),v=i=>parseFloat($(i).value),R=Math.round,isa=h=>15-1.98*h/1000;
+const TO=[[[[130,285],[145,315],[165,345]],[[175,375],[195,415],[220,460]],[[235,500],[265,560],[300,620]]],
+[[[225,480],[235,535],[285,590]],[[305,645],[345,720],[390,800]],[[425,890],[475,1000],[535,1125]]]];
+const LD=[[[[145,365],[155,385],[165,400]],[[160,395],[175,420],[185,440]],[[180,430],[195,460],[210,485]]],
+[[[185,435],[200,460],[210,485]],[[205,475],[225,505],[240,535]],[[235,525],[250,555],[270,590]]]];
+const FW={to:[1,.85,.65,.55],ld:[1,.78,.63,.52]};
+function pts(x,xs,c){const n=xs.length-1;if(x<=xs[0])return[[0,1]];if(x>=xs[n])return[[n,1]];
+for(let i=0;i<n;i++)if(x<=xs[i+1]){if(c)return[[i+1,1]];const t=(x-xs[i])/(xs[i+1]-xs[i]);return[[i,1-t],[i+1,t]]}}
+function tab(T,m,z,d,c){const r=[0,0];for(const[a,wa]of pts(m,[700,900],c))for(const[b,wb]of pts(z,[0,4000,8000],c))for(const[e,we]of pts(d,[-20,0,20],c)){const w=wa*wb*we,x=T[a][b][e];r[0]+=w*x[0];r[1]+=w*x[1]}return r}
+function wf(h,F){if(h<0)return 1-h*.05;if(h>=30)return F[3];const i=Math.floor(h/10);return F[i]+(F[i+1]-F[i])*(h-10*i)/10}
+const sig=(z,t)=>{const T=(isNaN(t)?isa(z):t)+273.15;return Math.pow(1-6.8756e-6*z,5.2559)/(T/288.15)};
+const row=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`;
+function build(k,title){$(k).innerHTML=`<h2>${k=='to'?'Décollage':'Atterrissage'}</h2><div class="g">
+<label>Masse (kg)<input type="number" id="${k}m" value="900"></label>
+<label>Altitude de l’aérodrome (ft)<input type="number" id="${k}el" value="0"></label>
+<label>QNH (hPa)<input type="number" id="${k}q" value="1013"></label>
+<label>Température OAT (°C)<input type="number" id="${k}t" value="15"></label>
+<label>QFU piste (°)<input type="number" id="${k}f" value="270"></label>
+<label>Vent : direction (°)<input type="number" id="${k}wd" value="270"></label>
+<label>Vent : vitesse (kt)<input type="number" id="${k}ws" value="0"></label>
+<label>Pente piste (%, + montante)<input type="number" id="${k}sl" value="0"></label>
+<label>Distance disponible (m), optionnelle<input type="number" id="${k}av"></label>
+<label class="ck"><input type="checkbox" id="${k}g"> Piste en herbe courte et sèche (+15 %)</label>
+<label class="ck"><input type="checkbox" id="${k}c"> Lecture prudente (valeur immédiatement supérieure, comme le recommande le manuel)</label></div>
+<div class="pr" id="${k}o"></div>
+<p class="n">Tableau « ${title} » : piste en dur, sèche, plane, vent nul, avion propre. Corrections du manuel appliquées multiplicativement. Interpolation entre 700–900 kg, 0–8000 ft et ISA ±20 °C. Altitude pression = altitude + (1013,25 − QNH) × 27 ft.</p>`}
+function perf(k){const T=k=='to'?TO:LD,m=v(k+'m'),el=v(k+'el'),q=v(k+'q'),t=v(k+'t'),c=$(k+'c').checked,o=$(k+'o'),w=[];
+const z=el+(1013.25-q)*27,d=t-isa(z),a=(v(k+'wd')-v(k+'f'))*Math.PI/180,s=v(k+'ws'),hd=s*Math.cos(a),xw=Math.abs(s*Math.sin(a));
+if([m,el,q,t,s,v(k+'sl')].some(isNaN))return o.innerHTML='';
+if(m>900)return o.innerHTML='<p class="e">Masse supérieure à 900 kg : hors limitations.</p>';
+if(m<700)w.push('Masse &lt; 700 kg : valeurs 700 kg utilisées.');if(z>8000)w.push('Zp &gt; 8000 ft : hors tableau, valeurs 8000 ft utilisées.');
+if(Math.abs(d)>20)w.push('Écart ISA hors ±20 °C : valeurs extrêmes du tableau utilisées'+(d>0?' (non conservatif).':'.'));
+if(hd<-10)w.push('Vent arrière &gt; 10 kt : déconseillé par le manuel.');if(hd>30)w.push('Vent de face &gt; 30 kt : facteur 30 kt conservé.');
+const b=tab(T,m,z,d,c),sl=v(k+'sl'),eff=Math.max(0,k=='to'?sl:-sl),gr=$(k+'g').checked,
+f=wf(hd,FW[k])*(gr?1.15:1)*(1+.05*eff),r=[b[0]*f,b[1]*f],av=v(k+'av');let ck='';
+if(!isNaN(av)){if(k=='to')ck=row('Marge sur passage 15 m',av-r[1]>=0?`<span class="o">${R(av-r[1])} m</span>`:`<span class="e">${R(av-r[1])} m</span>`);
+else{const n=1.5*r[1];ck=row('Piste mini conseillée (1,5 × dist.)',R(n)+' m')+row('Distance disponible',av>=n?`<span class="o">suffisante</span>`:`<span class="e">insuffisante</span>`)}}
+o.innerHTML=`<div class="big"><div><b>${R(r[0])} m</b><span>Roulement</span></div><div><b>${R(r[1])} m</b><span>${k=='to'?'Passage 15 m (50 ft)':'Depuis 15 m jusqu’à l’arrêt'}</span></div></div>
+<table>${row('Altitude pression',R(z)+' ft')}${row('Écart ISA',(d>0?'+':'')+R(d)+' °C')}${row('Composante de face',R(hd)+' kt'+(hd<0?' (arrière)':''))}${row('Composante traversière',R(xw)+' kt')}
+${row('Valeurs tableau (roul. / 15 m)',R(b[0])+' / '+R(b[1])+' m')}${row('Coefficient global',f.toFixed(2))}${ck}</table>${w.map(x=>`<p class="w">⚠ ${x}</p>`).join('')}`}
+function climb(){const m=v('clm'),z=v('clz'),h2=v('clh'),t=v('clt'),hw=v('clw'),o=$('clo'),w=[];if([m,z,hw].some(isNaN))return o.innerHTML='';
+if(m>900)return o.innerHTML='<p class="e">Masse supérieure à 900 kg : hors limitations.</p>';
+if(m<800)w.push('Masse &lt; 800 kg : droite du graphique extrapolée.');
+const A=4.10-1.05*(m-800)/100,B=.22+(.21-.22)*(m-800)/100,d=(isNaN(t)?0:t-isa(z)),k=1-.035*d/10,
+vz=h=>Math.max(0,k*(A-B*h/1000)),lim=12000-2600*(900-m)/100,v1=vz(z);
+if(Math.max(z,h2||0)>lim)w.push('Altitude au-delà de la portion tracée du graphique (≈ '+R(lim/100)*100+' ft à cette masse) : extrapolation.');
+if(v1<=0)return o.innerHTML='<p class="e">Taux de montée nul à cette altitude.</p>';
+const tas=145/1.852/Math.sqrt(sig(z,t)),gs=tas-hw;if(gs<=0)return o.innerHTML='<p class="e">Vent de face supérieur à la vitesse vraie.</p>';
+let ex='';if(!isNaN(h2)&&h2>z){const v2=vz(h2);if(v2<=0)w.push('Altitude cible non atteignable.');else{const s=Math.log(v1/v2)/(3.2808*k*B/1000),mn=s/60;
+ex=row('Temps de montée jusqu’à '+R(h2)+' ft',Math.floor(mn)+' min '+String(R(s%60)).padStart(2,'0')+' s')+row('Taux à l’altitude cible',R(v2*196.85)+' ft/min')+row('Distance parcourue (moy.)',R(gs*mn/60*10)/10+' NM')}}
+o.innerHTML=`<div class="big"><div><b>${R(v1*196.85)} ft/min</b><span>${(v1).toFixed(2)} m/s à Vy</span></div><div><b>${(v1/(gs*.5144)*100).toFixed(1)} %</b><span>Pente sol (${R(v1*196.85*60/gs)} ft/NM)</span></div></div>
+<table>${row('Vy (volets rentrés)','145 km/h (78 kt) IAS')}${row('Vitesse vraie / sol',R(tas)+' / '+R(gs)+' kt')}${row('Écart ISA',(d>0?'+':'')+R(d)+' °C')}${ex}</table>${w.map(x=>`<p class="w">⚠ ${x}</p>`).join('')}`}
+build('to','Distance de décollage');build('ld','Distance d’atterrissage');
+const run=()=>{perf('to');perf('ld');climb()};
+const MBL=[['tom','to'],['ldm','ld'],['clm','to']],dirty={};
+function mbSync(){MBL.forEach(([id,k])=>{const i=$(id),p=i.parentNode;let b=p.querySelector('.mbb');
+if(!b){b=document.createElement('button');b.type='button';b.className='mbb';p.appendChild(b);b.onclick=()=>{dirty[id]=0;mbSync()}}
+if(!window.MBM){b.hidden=true;return}
+if(!dirty[id])i.value=Math.round(MBM[k]*10)/10;
+b.hidden=!dirty[id];b.textContent='↳ Reprendre la masse du devis ('+Math.round(MBM[k])+' kg)'});run()}
+document.addEventListener('input',e=>{if(!e.target.closest('#perf'))return;if(MBL.some(x=>x[0]===e.target.id)){dirty[e.target.id]=1;mbSync()}else run()});
+document.addEventListener('mbupdate',mbSync);mbSync();
+})();
+</script>
+
+
+</body></html>
